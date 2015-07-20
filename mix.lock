@@ -1,0 +1,2 @@
+%{"meck": {:hex, :meck, "0.8.3"},
+  "mock": {:git, "https://github.com/jjh42/mock.git", "5a6bb6dd70ccc54997dda72f18f0ab85138c1253", []}}

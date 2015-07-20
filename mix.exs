@@ -27,6 +27,6 @@ defmodule ElixirConnect4.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    []
+    [{:mock, git: "https://github.com/jjh42/mock.git", only: :dev}]
   end
 end

@@ -25,7 +25,7 @@ defmodule GameTests do
 
    test "when a move cannot be made status returns :error" do
       {board, _player} = Game.start_new()
-      {status, _msg} = Game.take_turn board, %Player {type: :human, colour: :red}, {10, 10}
+      {status, _msg} = Game.take_turn board, %Player {type: :human, colour: :red}
       assert status == :error
    end
 
