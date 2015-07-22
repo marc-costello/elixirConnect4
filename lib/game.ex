@@ -4,10 +4,22 @@ defmodule Game do
    end
 
    def take_turn(board, player) do
-      input = Player.receive_input()
-      #case Board.drop_coin column do
-         #:error ->
-         #{:ok, move} ->
-      #end
+      case player.type do
+        :human -> take_human_turn board, player
+        :computer -> take_computer_turn board, player
+      end
+   end
+
+   defp take_human_turn(board, player) do
+     Player.receive_input()
+     |> Board.drop_coin board, player
+   end
+
+   defp take_computer_turn(board, player) do
+     # do computer stuff..
+   end
+
+   defp column_index_from_input(input) do
+     input - 1
    end
 end

@@ -9,7 +9,7 @@ defmodule Board do
       List.flatten(board) |> Enum.all? &(&1 == :empty)
    end
 
-   def drop_coin(board, player, column) do
+   def drop_coin(column, board, player) do
       #case can_drop_coin? board, column do
          #true ->
          #false ->

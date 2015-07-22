@@ -34,7 +34,7 @@ defmodule BoardTests do
       board = Board.create_new()
       player = %Player{type: :human, colour: :red}
 
-      {:ok, move} = Board.drop_coin board, 2, player
+      {:ok, move} = Board.drop_coin 2, board, player
       assert move == {1,0}
    end
 
