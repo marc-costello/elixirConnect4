@@ -1,5 +1,6 @@
 defmodule GameTests do
-   use ExUnit.Case
+   use ExUnit.Case, async: false
+   import Mock
 
    test "beginning a new game generates a blank board" do
       {board, _player} = Game.start_new()
@@ -23,10 +24,17 @@ defmodule GameTests do
       assert status == :ok
    end
 
-   test "when a move cannot be made status returns :error" do
+   test_with_mock "when an invalid input is given, status returns :error and an appropriate message",
+      IO, [gets: fn(_prompt) -> "notvalid\n" end] do
       {board, _player} = Game.start_new()
-      {status, _msg} = Game.take_turn board, %Player {type: :human, colour: :red}
-      assert status == :error
+      {:error, msg} = Game.take_turn board, %Player {type: :human, colour: :red}
+      assert msg == "That is not a valid input, please try again\n"
    end
 
+   test_with_mock "when an out of range int is given, status returns :error and an appropriate message",
+      IO, [gets: fn(_prompt) -> "8\n" end] do
+      {board, _player} = Game.start_new()
+      {:error, msg} = Game.take_turn board, %Player {type: :human, colour: :red}
+      assert msg == "That is out of range, please try again\n"
+   end
 end
