@@ -4,6 +4,10 @@ defmodule Game do
    end
 
    def take_turn(board, player) do
-     {:ok, {1,1}}
+      input = Player.receive_input()
+      #case Board.drop_coin column do
+         #:error ->
+         #{:ok, move} ->
+      #end
    end
 end
