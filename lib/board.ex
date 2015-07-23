@@ -20,4 +20,11 @@ defmodule Board do
    def can_drop_coin?(board, column) do
 
    end
+
+   def make_move(board, {colIndex, rowIndex}, colour) do
+      new_row = board
+       |> Enum.at(colIndex)
+       |> List.replace_at(rowIndex, colour)
+      List.replace_at(board, colIndex, new_row)
+   end
 end
