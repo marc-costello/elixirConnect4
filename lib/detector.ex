@@ -1,7 +1,9 @@
 defmodule Detector do
-   def game_state do
-      
+   def game_state(board, {colIndex, rowIndex}) do
+
    end
+
+   
 end
 
 # FROM MY F# SOLUTION. SEEMS PRETTY ELEGANT WAY OF SOLVING IT

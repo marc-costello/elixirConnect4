@@ -1,8 +1,9 @@
 defmodule Board do
+   import GameSettings
 
    def create_new() do
-      aRow = fn -> for n <- 1..6, do: :empty end
-      for _ <- 1..7, do: aRow.()
+      aRow = fn -> for n <- 1..GameSettings.rows, do: :empty end
+      for _ <- 1..columns, do: aRow.()
    end
 
    def is_blank?(board) do

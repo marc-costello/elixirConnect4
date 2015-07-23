@@ -1,5 +1,5 @@
 defmodule BoardTests do
-   use ExUnit.Case
+   use ExUnit.Case, GameSettings
 
    test "a connect4 board should have 7 columns" do
       board = Board.create_new()
@@ -51,7 +51,7 @@ defmodule BoardTests do
    test "given a board with a full column, can a coin be dropped should return false" do
        board = Board.create_new()
        columnIndex = 0
-       fullColumn = for _ <- 1..6, do: :red
+       fullColumn = for _ <- 1..no_columns, do: :red
        updatedBoard = board |> List.replace_at(columnIndex, fullColumn)
        assert Board.can_drop_coin?(updatedBoard, columnIndex) == false
    end
