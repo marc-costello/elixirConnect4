@@ -35,18 +35,25 @@ defmodule BoardTests do
       board = Board.create_new()
       player = %Player{type: :human, colour: :red}
 
-      {:ok, move} = Board.drop_coin 2, board, player
-      assert move == {1,0}
+      {:ok, _updatedBoard, player_used, _coords} = Board.drop_coin 2, board, player
+      assert player_used.colour == player.colour
    end
 
-   test "given a board and a valid column number, can a coin be dropped? should return true" do
+   test "given a board and a valid column number, can a coin be dropped? should return ok" do
        board = Board.create_new()
-       assert Board.can_drop_coin?(board, 1)
+       {status, _index} = Board.can_drop_coin(board, 1)
+       assert status == :ok
+   end
+
+   test "given a board and a valid column number, can drop coin should return the index of the first empty row" do
+      board = Board.create_new()
+      {:ok, index} = Board.can_drop_coin(board, 1)
+      assert index == 0
    end
 
    test "given a board and an invalid column number, can a coin be dropped should return false" do
        board = Board.create_new()
-       assert Board.can_drop_coin?(board, 99) == false
+       assert Board.can_drop_coin(board, 99) == false
    end
 
    test "given a board with a full column, can a coin be dropped should return false" do
@@ -54,6 +61,6 @@ defmodule BoardTests do
        columnIndex = 0
        fullColumn = for _ <- 1..GS.no_columns, do: :red
        updatedBoard = board |> List.replace_at(columnIndex, fullColumn)
-       assert Board.can_drop_coin?(updatedBoard, columnIndex) == false
+       assert Board.can_drop_coin(updatedBoard, columnIndex) == false
    end
 end

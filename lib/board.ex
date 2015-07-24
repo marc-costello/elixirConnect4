@@ -11,16 +11,24 @@ defmodule Board do
    end
 
    def drop_coin(column, board, player) do
-      #case can_drop_coin? board, column do
-         #true ->
-         #false ->
-      #end
-      :error
+      case can_drop_coin board, column do
+         false -> :error
+         {:ok, emptyRowIndex} ->
+            updatedBoard = make_move(board, {column, emptyRowIndex}, player.colour)
+            {:ok, updatedBoard, player, {1,0}}
+      end
    end
 
-   def can_drop_coin?(board, column) do
-      columnList = board |> Enum.at column
-      Enum.any? columnList, fn(row_item) -> row_item == :empty end
+   def can_drop_coin(board, column) do
+      case board |> Enum.at column do
+         nil -> false
+         columnList ->
+            availableIndex =
+               columnList
+               |> Enum.with_index
+               |> Enum.find fn({item, i}) -> item == :empty end
+            if availableIndex == nil, do: false, else: {:ok, elem(availableIndex, 1)}
+      end
    end
 
    def make_move(board, {colIndex, rowIndex}, colour) do
