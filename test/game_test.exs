@@ -25,7 +25,7 @@ defmodule GameTests do
       assert status == :ok
    end
 
-   test_with_mock "when an out of range int is given, status returns :error and an appropriate message",
+   test_with_mock "when an out of range input is given, status returns :error and an appropriate message",
       IO, [gets: fn(_prompt) -> "8\n" end] do
       {board, _player} = Game.start_new()
       {:error, msg} = Game.take_turn board, %Player {type: :human, colour: :red}

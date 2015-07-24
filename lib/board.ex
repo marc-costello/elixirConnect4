@@ -15,7 +15,7 @@ defmodule Board do
          false -> :error
          {:ok, emptyRowIndex} ->
             updatedBoard = make_move(board, {column, emptyRowIndex}, player.colour)
-            {:ok, updatedBoard, player, {1,0}}
+            {:ok, updatedBoard, player, {column, emptyRowIndex}}
       end
    end
 

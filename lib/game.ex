@@ -1,4 +1,6 @@
 defmodule Game do
+  alias GameSettings, as: GS
+
    def start_new() do
       { Board.create_new(), %Player{type: :human, colour: :red} }
    end
@@ -11,8 +13,12 @@ defmodule Game do
    end
 
    defp take_human_turn(board, player) do
-     Player.receive_input()
-     |> Board.drop_coin board, player
+     no_columns = GS.no_columns
+     case Player.receive_input() do
+       x when x > no_columns or x < 1 ->
+         {:error, "That is out of range, please try again\n"}
+       x -> drop_coin_or_tell_user_of_failure(x, board, player)
+     end
    end
 
    defp take_computer_turn(board, player) do
@@ -21,5 +27,13 @@ defmodule Game do
 
    defp column_index_from_input(input) do
      input - 1
+   end
+
+   defp drop_coin_or_tell_user_of_failure(column, board, player) do
+     case Board.drop_coin column, board, player do
+       :error ->
+         take_turn board, player
+       success -> success
+     end
    end
 end
