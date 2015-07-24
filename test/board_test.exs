@@ -1,10 +1,11 @@
 defmodule BoardTests do
-   use ExUnit.Case, GameSettings
+   use ExUnit.Case
+   alias GameSettings, as: GS
 
    test "a connect4 board should have 7 columns" do
       board = Board.create_new()
       columnCount = length board
-      assert columnCount == 7
+      assert columnCount == GS.no_columns
    end
 
    test "a connect4 board should have 6 rows" do
@@ -13,7 +14,7 @@ defmodule BoardTests do
          board
          |> List.first
          |> length
-      assert rowCount == 6
+      assert rowCount == GS.no_rows
    end
 
    test "a board should be initialised full of :empty" do
@@ -51,7 +52,7 @@ defmodule BoardTests do
    test "given a board with a full column, can a coin be dropped should return false" do
        board = Board.create_new()
        columnIndex = 0
-       fullColumn = for _ <- 1..no_columns, do: :red
+       fullColumn = for _ <- 1..GS.no_columns, do: :red
        updatedBoard = board |> List.replace_at(columnIndex, fullColumn)
        assert Board.can_drop_coin?(updatedBoard, columnIndex) == false
    end

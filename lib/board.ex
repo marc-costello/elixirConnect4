@@ -1,9 +1,9 @@
 defmodule Board do
-   import GameSettings
+   alias GameSettings, as: GS
 
    def create_new() do
-      aRow = fn -> for n <- 1..GameSettings.rows, do: :empty end
-      for _ <- 1..columns, do: aRow.()
+      aRow = fn -> for n <- 1..GS.no_rows, do: :empty end
+      for _ <- 1..GS.no_columns, do: aRow.()
    end
 
    def is_blank?(board) do
@@ -19,7 +19,8 @@ defmodule Board do
    end
 
    def can_drop_coin?(board, column) do
-
+      columnList = board |> Enum.at column
+      Enum.any? columnList, fn(row_item) -> row_item == :empty end
    end
 
    def make_move(board, {colIndex, rowIndex}, colour) do
