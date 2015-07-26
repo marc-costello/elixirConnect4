@@ -5,6 +5,10 @@ defmodule Game do
       { Board.create_new(), %Player{type: :human, colour: :red} }
    end
 
+   @doc """
+    on error returns: {:error, msg} \n
+    on success returns: {:ok, board, player, coord}
+   """
    def take_turn(board, player) do
       case player.type do
         :human -> take_human_turn board, player

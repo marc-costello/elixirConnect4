@@ -12,13 +12,6 @@ defmodule GameTests do
       assert player.type == :human
    end
 
-   test_with_mock "human turn waits for user input",
-      IO, [gets: fn(_prompt) -> "1\n" end] do
-      {board, _player} = Game.start_new()
-      {:ok, move} = Game.take_turn board, %Player {type: :human, colour: :red}
-      assert move == {1, 1}
-   end
-
    test "computer turn automatically plays" do
       {board, _player} = Game.start_new()
       {status, move} = Game.take_turn board, %Player {type: :computer, colour: :yellow}
