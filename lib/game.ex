@@ -26,7 +26,8 @@ defmodule Game do
    end
 
    defp take_computer_turn(board, player) do
-     # do computer stuff..
+     # calculate_best_move
+     # make the move
    end
 
    defp column_index_from_input(input) do

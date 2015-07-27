@@ -14,8 +14,8 @@ defmodule GameTests do
 
    test "computer turn automatically plays" do
       {board, _player} = Game.start_new()
-      {status, move} = Game.take_turn board, %Player {type: :computer, colour: :yellow}
-      assert status == :ok
+      {:ok, updated_board, _player, _coord} = Game.take_turn board, %Player {type: :computer, colour: :yellow}
+      assert updated_board != board
    end
 
    test_with_mock "when an out of range input is given, status returns :error and an appropriate message",

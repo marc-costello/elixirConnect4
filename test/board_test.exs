@@ -63,4 +63,18 @@ defmodule BoardTests do
        updatedBoard = board |> List.replace_at(columnIndex, fullColumn)
        assert Board.can_drop_coin(updatedBoard, columnIndex) == false
    end
+
+   test "format board into horizontal lists for diffing" do
+      board = for _ <- 1..GS.no_columns, do: [:red, :empty, :empty, :empty, :empty, :empty]
+      correct_assertion_board = for n <- 1..GS.no_columns do
+          if n == 1 do
+             for _ <- 1..GS.no_rows, do: :red
+          else
+             for _ <- 1..GS.no_rows, do: :empty
+          end
+      end
+
+      horizontal_board = Board.convert(board, :horizontal)
+      assert horizontal_board == correct_assertion_board
+   end
 end
