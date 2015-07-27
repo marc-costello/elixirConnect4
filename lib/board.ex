@@ -37,4 +37,14 @@ defmodule Board do
        |> List.replace_at(rowIndex, colour)
       List.replace_at(board, colIndex, new_row)
    end
+
+   def convert(board, direction) when direction == :horizontal do
+      # take all the i from each row into a new list
+      for i <- 0..GS.max_column_index do
+        # for each row return the item at index i
+        Enum.map(board, fn(row) ->
+          if i < GS.max_row_index, do: Enum.at(row, i) 
+        end)
+      end
+   end
 end
