@@ -1,9 +1,15 @@
 defmodule Detector do
+
+   @type game_state_result :: {Atom.t, Atom.t, Atom.t}
+
+   @spec game_state(List.t, {Integer, Integer}) :: game_state_result
    def game_state(board, {colIndex, rowIndex}) do
 
    end
 
-   
+   defp detect_win() do
+       
+   end
 end
 
 # FROM MY F# SOLUTION. SEEMS PRETTY ELEGANT WAY OF SOLVING IT

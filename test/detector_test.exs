@@ -11,7 +11,6 @@ defmodule DetectorTests do
       end
     end
     winning_board = for _ <- 1..GS.no_columns, do: row.()
-
     assert Detector.game_state(winning_board, {}, :red) == {:win, :red, :horizontal}
   end
 
@@ -25,7 +24,6 @@ defmodule DetectorTests do
 
   test "detect a diagonal win" do
     board = Board.create_new()
-    #winning_grid = [0..3] |> List.fold (fun accGrid i -> Grid.makeMove accGrid ((i,i), Player(Red))) blankGrid
     winning_board = [0..3] |> Enum.reduce(board, fn(i, accBoard) -> Board.make_move(accBoard, {i, i}, :red) end)
     assert Detector.game_state(winning_board, {3, 3}, :red) == {:win, :red, :diagonal}
   end
