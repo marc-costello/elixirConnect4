@@ -2,13 +2,22 @@ defmodule Detector do
 
    @type game_state_result :: {Atom.t, Atom.t, Atom.t}
 
-   @spec game_state(List.t, {Integer, Integer}) :: game_state_result
-   def game_state(board, {colIndex, rowIndex}) do
-
+   @spec game_state(List.t, Atom.t, {Integer, Integer}) :: game_state_result
+   def game_state(board, colour, coord) do
+     board
+     |> vertical_win? player, colour
+     |> horizontal_win? player, colour
+     |> diagonal_win? player, colour, coord
    end
 
-   defp detect_win() do
-       
+   defp is_row_a_winner?(row, colour) do
+     winning_count = row |> List.foldl 0, fn (x, acc) ->
+       if x == colour, do: acc + 1, else: 0
+     end
+     case winning_count do
+      x when x >= 4 -> true
+      _ -> false
+     end
    end
 end
 
