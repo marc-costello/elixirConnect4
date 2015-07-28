@@ -66,11 +66,11 @@ defmodule BoardTests do
 
    test "format board into horizontal lists for diffing" do
       board = for _ <- 1..GS.no_columns, do: [:red, :empty, :empty, :empty, :empty, :empty]
-      correct_assertion_board = for n <- 1..GS.no_columns do
+      correct_assertion_board = for n <- 1..GS.no_rows do
           if n == 1 do
-             for _ <- 1..GS.no_rows, do: :red
+             for _ <- 1..GS.no_columns, do: :red
           else
-             for _ <- 1..GS.no_rows, do: :empty
+             for _ <- 1..GS.no_columns, do: :empty
           end
       end
 

@@ -39,11 +39,9 @@ defmodule Board do
    end
 
    def convert(board, direction) when direction == :horizontal do
-      # take all the i from each row into a new list
-      for i <- 0..GS.max_column_index do
-        # for each row return the item at index i
+      for i <- 0..GS.max_row_index do
         Enum.map(board, fn(row) ->
-          if i < GS.max_row_index, do: Enum.at(row, i) 
+          if i <= GS.max_row_index, do: Enum.at(row, i)
         end)
       end
    end
