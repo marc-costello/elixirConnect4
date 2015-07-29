@@ -39,4 +39,9 @@ defmodule DetectorTests do
     end
     assert Detector.game_state(draw_board, {GS.max_column_index, GS.max_row_index}, :red) == {:draw}
   end
+
+  test "no winner or draw detected return :none" do
+    board = Board.create_new()
+    assert Detector.game_state(board, {0, 0}, :red) == {:none}
+  end
 end
