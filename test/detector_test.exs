@@ -11,7 +11,7 @@ defmodule DetectorTests do
       end
     end
     winning_board = for _ <- 1..GS.no_columns, do: row.()
-    assert Detector.game_state(winning_board, {}, :red) == {:win, :red, :horizontal}
+    assert Detector.game_state(winning_board, {1,0}, :red) == {:win, :red, :horizontal}
   end
 
   test "detect a vertical win" do

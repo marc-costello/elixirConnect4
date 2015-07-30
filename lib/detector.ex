@@ -15,7 +15,6 @@ defmodule Detector do
        {false, true, _} -> {:win, colour, :horizontal}
        {false, false, true} -> {:win, colour, :diagonal}
      end
-
    end
 
    def vertical_win?(board, colour) do
@@ -26,7 +25,7 @@ defmodule Detector do
 
    def horizontal_win?(board, colour) do
       horizontal_board = Board.convert(board, :horizontal)
-      Enum.any? board, fn (row) ->
+      Enum.any? horizontal_board, fn (row) ->
          is_group_a_winner? row, colour
       end
    end
@@ -38,9 +37,9 @@ defmodule Detector do
       starting_index = (move_column_index * GS.no_columns) + move_row_index
 
       [6,8,-6,-8]
-      |> Enum.map fn (i) -> diagonal_indexes(i, starting_index, max_grid_index) end
-      |> Enum.map fn (indexes) -> convert_indexes_into_grid_entries(indexes, flat_board) end
-      |> Enum.any? fn (row) -> is_group_a_winner?(row, colour) end
+      |> get_all_indexes(starting_index, max_grid_index)
+      |> convert_indexes_into_grid_entries(flat_board)
+      |> is_any_row_a_winner?(colour)
    end
 
    defp is_group_a_winner?(row, colour) do
@@ -54,16 +53,28 @@ defmodule Detector do
    end
 
    defp convert_indexes_into_grid_entries(indexes, flat_board) do
-       Enum.map indexes, fn (i) ->
-          elem flat_board, i
+       IO.puts indexes
+       IO.puts flat_board
+       Enum.map indexes, fn (index) ->
+          elem flat_board, index
        end
    end
 
-   defp diagonal_indexes(increment, current_index, max_grid_index) do
+   defp diagonal_indexes(increment, current_index, max_grid_index, acc) do
      case current_index do
-        i when i < 0 or i > max_grid_index -> []
-        i -> i ++ diagonal_indexes(increment, (i + increment), max_grid_index)
+        i when i < 0 or i > max_grid_index -> acc
+        i ->
+          this_acc = acc ++ [i]
+          diagonal_indexes(increment, (i + increment), max_grid_index, this_acc)
      end
+   end
+
+   defp get_all_indexes(increment_list, starting_index, max_grid_index) do
+       Enum.map increment_list, fn (i) -> diagonal_indexes(i, starting_index, max_grid_index, []) end
+   end
+
+   defp is_any_row_a_winner?(board, colour) do
+      Enum.any? board, fn (row) -> is_group_a_winner?(row, colour) end
    end
 end
 
