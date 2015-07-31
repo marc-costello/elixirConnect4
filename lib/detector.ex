@@ -38,11 +38,11 @@ defmodule Detector do
 
       [6,8,-6,-8]
       |> get_all_indexes(starting_index, max_grid_index)
-      |> convert_indexes_into_grid_entries(flat_board)
+      |> indexes_to_grid_entries(flat_board, [])
       |> is_any_row_a_winner?(colour)
    end
 
-   defp is_group_a_winner?(row, colour) do
+   def is_group_a_winner?(row, colour) do
      winning_count = row |> List.foldl 0, fn (x, acc) ->
        if x == colour, do: acc + 1, else: 0
      end
@@ -52,25 +52,24 @@ defmodule Detector do
      end
    end
 
-   defp convert_indexes_into_grid_entries(indexes, flat_board) do
-       IO.puts indexes
-       IO.puts flat_board
-       Enum.map indexes, fn (index) ->
-          elem flat_board, index
-       end
+   def get_all_indexes(increment_list, starting_index, max_grid_index) do
+       # each one, 6,8,-6,-8
+       Enum.map increment_list, fn (i) -> diagonal_indexes(i, starting_index, max_grid_index, []) end
    end
 
-   defp diagonal_indexes(increment, current_index, max_grid_index, acc) do
+   def indexes_to_grid_entries([], flat_board, acc), do: acc
+   def indexes_to_grid_entries([head|tail], flat_board, acc) do
+       updated_acc = acc ++ (Enum.map(head, fn (i) -> elem(flat_board, i) end))
+       indexes_to_grid_entries(tail, flat_board, updated_acc)
+   end
+
+   def diagonal_indexes(increment, current_index, max_grid_index, acc) do
      case current_index do
         i when i < 0 or i > max_grid_index -> acc
         i ->
           this_acc = acc ++ [i]
           diagonal_indexes(increment, (i + increment), max_grid_index, this_acc)
      end
-   end
-
-   defp get_all_indexes(increment_list, starting_index, max_grid_index) do
-       Enum.map increment_list, fn (i) -> diagonal_indexes(i, starting_index, max_grid_index, []) end
    end
 
    defp is_any_row_a_winner?(board, colour) do

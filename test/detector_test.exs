@@ -44,4 +44,14 @@ defmodule DetectorTests do
     board = Board.create_new()
     assert Detector.game_state(board, {0, 0}, :red) == {:none}
   end
+
+  test "indexes_to_grid_entries" do
+     indexes = [[0,1,3], [4,5], [3,4]]
+     
+  end
+
+  test "get_all_indexes should return a list" do
+      max_index = GS.max_row_index * GS.max_column_index
+      assert Detector.get_all_indexes([6,8,-6,-8], 0, max_index) |> is_list
+  end
 end
