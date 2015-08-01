@@ -24,7 +24,7 @@ defmodule DetectorTests do
 
   test "detect a diagonal win" do
     board = Board.create_new()
-    winning_board = [0..3] |> Enum.reduce(board, fn(i, accBoard) -> Board.make_move(accBoard, {i, i}, :red) end)
+    winning_board = Enum.reduce([0,1,2,3], board, fn(i, accBoard) -> Board.make_move(accBoard, {i, i}, :red) end)
     assert Detector.game_state(winning_board, {3, 3}, :red) == {:win, :red, :diagonal}
   end
 
@@ -45,9 +45,11 @@ defmodule DetectorTests do
     assert Detector.game_state(board, {0, 0}, :red) == {:none}
   end
 
-  test "indexes_to_grid_entries" do
-     indexes = [[0,1,3], [4,5], [3,4]]
-     
+  test "indexes_to_grid_entries should return all entries in the index list." do
+     indexes = [[0,1,2], [3,4]]
+     collection = ["0", "1", "2", "3", "4"]
+     results = Detector.indexes_to_grid_entries(indexes, collection, [])
+     assert results == [["0", "1", "2"], ["3", "4"]]
   end
 
   test "get_all_indexes should return a list" do

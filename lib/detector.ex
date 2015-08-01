@@ -8,12 +8,15 @@ defmodule Detector do
      detection_results = {
        (vertical_win? board, colour),
        (horizontal_win? board, colour),
-       (diagonal_win? board, colour, coord)
+       (diagonal_win? board, colour, coord),
+       (draw? board)
      }
      case detection_results do
-       {true, _, _} -> {:win, colour, :vertical}
-       {false, true, _} -> {:win, colour, :horizontal}
-       {false, false, true} -> {:win, colour, :diagonal}
+       {true, _, _, _} -> {:win, colour, :vertical}
+       {false, true, _, _} -> {:win, colour, :horizontal}
+       {false, false, true, _} -> {:win, colour, :diagonal}
+       {false, false, false, true} -> {:draw}
+       {false, false, false, false} -> {:none}
      end
    end
 
@@ -42,6 +45,14 @@ defmodule Detector do
       |> is_any_row_a_winner?(colour)
    end
 
+   def draw?(board) do
+     draw =
+       board
+       |> List.flatten
+       |> Enum.any? &(&1 == :empty)
+     !draw
+   end
+
    def is_group_a_winner?(row, colour) do
      winning_count = row |> List.foldl 0, fn (x, acc) ->
        if x == colour, do: acc + 1, else: 0
@@ -59,7 +70,7 @@ defmodule Detector do
 
    def indexes_to_grid_entries([], flat_board, acc), do: acc
    def indexes_to_grid_entries([head|tail], flat_board, acc) do
-       updated_acc = acc ++ (Enum.map(head, fn (i) -> elem(flat_board, i) end))
+       updated_acc = acc ++ [(Enum.map(head, fn (i) -> Enum.at(flat_board, i) end))]
        indexes_to_grid_entries(tail, flat_board, updated_acc)
    end
 
