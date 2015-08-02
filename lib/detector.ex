@@ -13,8 +13,8 @@ defmodule Detector do
      }
      case detection_results do
        {true, _, _, _} -> {:win, colour, :vertical}
-       {false, true, _, _} -> {:win, colour, :horizontal}
-       {false, false, true, _} -> {:win, colour, :diagonal}
+       {_, true, _, _} -> {:win, colour, :horizontal}
+       {_, _, true, _} -> {:win, colour, :diagonal}
        {false, false, false, true} -> {:draw}
        {false, false, false, false} -> {:none}
      end
@@ -43,15 +43,6 @@ defmodule Detector do
       |> get_all_indexes(starting_index, max_grid_index)
       |> indexes_to_grid_entries(flat_board, [])
       |> is_any_row_a_winner?(colour)
-
-      #debug
-      # increment_list = [6,8,-6,-8]
-      # allindexes = get_all_indexes(increment_list, starting_index, max_grid_index)
-      # #IO.puts allindexes
-      # gridentries = indexes_to_grid_entries(allindexes, flat_board, [])
-      # IO.puts gridentries
-      # winner = is_any_row_a_winner?(gridentries, colour)
-      # winner
    end
 
    def draw?(board) do
@@ -65,7 +56,7 @@ defmodule Detector do
    def is_group_a_winner?(row, colour) do
      winning_count = row |> List.foldl 0, fn (entry, acc) ->
        case {entry, acc} do
-         {player, _} -> acc + 1
+         {colour, _} -> acc + 1
          {_, 4} -> 4
          {_, _} -> 0
        end

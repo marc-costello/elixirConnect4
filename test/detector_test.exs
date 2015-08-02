@@ -4,12 +4,7 @@ defmodule DetectorTests do
   alias GameSettings, as: GS
 
   test "detect a horizontal win" do
-    board = Board.create_new()
-    row = fn ->
-      for n <- 1..6 do
-         if n == 1, do: :red, else: :empty
-      end
-    end
+    row = fn -> [:red, :empty, :empty, :empty, :empty, :empty] end
     winning_board = for _ <- 1..GS.no_columns, do: row.()
     assert Detector.game_state(winning_board, {1,0}, :red) == {:win, :red, :horizontal}
   end
