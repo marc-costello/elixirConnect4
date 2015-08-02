@@ -37,12 +37,21 @@ defmodule Detector do
       {move_column_index, move_row_index} = coord
       flat_board = List.flatten board
       max_grid_index = (length flat_board) - 1
-      starting_index = (move_column_index * GS.no_columns) + move_row_index
+      starting_index = (move_column_index * GS.max_column_index) + move_row_index
 
       [6,8,-6,-8]
       |> get_all_indexes(starting_index, max_grid_index)
       |> indexes_to_grid_entries(flat_board, [])
       |> is_any_row_a_winner?(colour)
+
+      #debug
+      # increment_list = [6,8,-6,-8]
+      # allindexes = get_all_indexes(increment_list, starting_index, max_grid_index)
+      # #IO.puts allindexes
+      # gridentries = indexes_to_grid_entries(allindexes, flat_board, [])
+      # IO.puts gridentries
+      # winner = is_any_row_a_winner?(gridentries, colour)
+      # winner
    end
 
    def draw?(board) do
@@ -54,13 +63,14 @@ defmodule Detector do
    end
 
    def is_group_a_winner?(row, colour) do
-     winning_count = row |> List.foldl 0, fn (x, acc) ->
-       if x == colour, do: acc + 1, else: 0
+     winning_count = row |> List.foldl 0, fn (entry, acc) ->
+       case {entry, acc} do
+         {player, _} -> acc + 1
+         {_, 4} -> 4
+         {_, _} -> 0
+       end
      end
-     case winning_count do
-      x when x >= 4 -> true
-      _ -> false
-     end
+     winning_count >= 4
    end
 
    def get_all_indexes(increment_list, starting_index, max_grid_index) do
@@ -83,7 +93,7 @@ defmodule Detector do
      end
    end
 
-   defp is_any_row_a_winner?(board, colour) do
+   def is_any_row_a_winner?(board, colour) do
       Enum.any? board, fn (row) -> is_group_a_winner?(row, colour) end
    end
 end

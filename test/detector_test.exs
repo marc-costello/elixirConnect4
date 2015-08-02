@@ -25,7 +25,8 @@ defmodule DetectorTests do
   test "detect a diagonal win" do
     board = Board.create_new()
     winning_board = Enum.reduce([0,1,2,3], board, fn(i, accBoard) -> Board.make_move(accBoard, {i, i}, :red) end)
-    assert Detector.game_state(winning_board, {3, 3}, :red) == {:win, :red, :diagonal}
+    assert Detector.diagonal_win?(winning_board, :red, {3, 3})
+    #assert Detector.game_state(winning_board, {3, 3}, :red) == {:win, :red, :diagonal}
   end
 
   test "detect a draw" do
@@ -38,6 +39,11 @@ defmodule DetectorTests do
        if Integer.is_even(x), do: draw_row.(), else: Enum.reverse(draw_row.())
     end
     assert Detector.game_state(draw_board, {GS.max_column_index, GS.max_row_index}, :red) == {:draw}
+  end
+
+  test "given a list of moves, detect a win" do
+    winning_row = [:empty, :red, :red, :red, :red, :empty]
+    assert Detector.is_group_a_winner? winning_row, :red
   end
 
   test "no winner or draw detected return :none" do
@@ -55,5 +61,9 @@ defmodule DetectorTests do
   test "get_all_indexes should return a list" do
       max_index = GS.max_row_index * GS.max_column_index
       assert Detector.get_all_indexes([6,8,-6,-8], 0, max_index) |> is_list
+  end
+
+  test "is_any_row_a_winner? should return true if any list is a connect4" do
+      assert Detector.is_any_row_a_winner? [[:red,:red,:red,:red,:empty],[:empty, :red, :red, :yellow]], :red
   end
 end
