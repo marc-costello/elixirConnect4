@@ -26,12 +26,14 @@ defmodule Game do
    end
 
    defp take_computer_turn(board, player) do
-     # calculate_best_move
-     # make the move
-   end
+    result =
+       Ai.calculate_best_move(board, player.colour)
+       |> Board.drop_coin(board, player)
 
-   defp column_index_from_input(input) do
-     input - 1
+     case result do
+       :error -> IO.puts "error happened while taking computer turn."
+       success -> success
+     end
    end
 
    defp drop_coin_or_tell_user_of_failure(column, board, player) do

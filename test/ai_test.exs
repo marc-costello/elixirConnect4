@@ -16,4 +16,10 @@ defmodule AiTests do
     updated_board = List.replace_at(board, 2, row)
     assert Ai.calculate_best_move(updated_board, :yellow) == 2
   end
+
+  test "we can call calculate best move on an empty board and it return a valid index" do
+    board = Board.create_new()
+    result = Ai.calculate_best_move board, :yellow
+    assert result >= 0 && result <= GS.max_column_index
+  end
 end

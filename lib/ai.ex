@@ -14,9 +14,8 @@ defmodule Ai do
         |> counts_of_colour_with_index(colour)
         |> sort
 
-     most_suited =
-         highest_chance(vertical_counts, horizontal_counts)
-         |> get_final_recommended_row_index
+     highest_chance(vertical_counts, horizontal_counts)
+     |> get_final_recommended_row_index
   end
 
   defp counts_of_colour_with_index(board, colour) do
@@ -35,7 +34,7 @@ defmodule Ai do
 
      case vc do
          x when x >= hc -> {:vertical, vci}
-         x -> {:horizontal, hci}
+         _ -> {:horizontal, hci}
      end
   end
 
@@ -44,7 +43,8 @@ defmodule Ai do
   end
 
   defp get_final_recommended_row_index({alignment, index}) when alignment == :horizontal do
-
+    # for now, just return random, to be safe
+    get_random()
   end
 
   def get_random() do
