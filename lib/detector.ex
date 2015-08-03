@@ -39,7 +39,7 @@ defmodule Detector do
       max_grid_index = (length flat_board) - 1
       starting_index = (move_column_index * GS.max_column_index) + move_row_index
 
-      [6,8,-6,-8]
+      [7,9,-7,-9]
       |> get_all_indexes(starting_index, max_grid_index)
       |> indexes_to_grid_entries(flat_board, [])
       |> is_any_row_a_winner?(colour)

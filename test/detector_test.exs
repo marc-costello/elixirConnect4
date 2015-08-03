@@ -20,8 +20,8 @@ defmodule DetectorTests do
   test "detect a diagonal win" do
     board = Board.create_new()
     winning_board = Enum.reduce([0,1,2,3], board, fn(i, accBoard) -> Board.make_move(accBoard, {i, i}, :red) end)
-    assert Detector.diagonal_win?(winning_board, :red, {3, 3})
-    #assert Detector.game_state(winning_board, {3, 3}, :red) == {:win, :red, :diagonal}
+    #assert Detector.diagonal_win?(winning_board, :red, {3, 3})
+    assert Detector.game_state(winning_board, {3, 3}, :red) == {:win, :red, :diagonal}
   end
 
   test "detect a draw" do
