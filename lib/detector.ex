@@ -13,7 +13,7 @@ defmodule Detector do
      }
      case detection_results do
        {true, _, _, _} -> {:win, colour, :vertical}
-       {_, true, _, _} -> {:win, colour, :horizontal}
+       {false, true, _, _} -> {:win, colour, :horizontal}
        {_, _, true, _} -> {:win, colour, :diagonal}
        {false, false, false, true} -> {:draw}
        {false, false, false, false} -> {:none}
@@ -56,8 +56,8 @@ defmodule Detector do
    def is_group_a_winner?(row, colour) do
      winning_count = row |> List.foldl 0, fn (entry, acc) ->
        case {entry, acc} do
-         {colour, _} -> acc + 1
          {_, 4} -> 4
+         {^colour, _} -> acc + 1
          {_, _} -> 0
        end
      end
