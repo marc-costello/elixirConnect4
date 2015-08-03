@@ -2,7 +2,9 @@ defmodule Game do
   alias GameSettings, as: GS
 
    def start_new() do
-      { Board.create_new(), %Player{type: :human, colour: :red} }
+     board = Board.create_new()
+     Renderer.render board
+     { board, %Player{type: :human, colour: :red} }
    end
 
    @doc """
