@@ -3,7 +3,6 @@ defmodule Game do
 
    def start_new() do
      board = Board.create_new()
-     Renderer.render board
      { board, %Player{type: :human, colour: :red} }
    end
 

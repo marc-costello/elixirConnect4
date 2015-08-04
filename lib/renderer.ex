@@ -1,6 +1,7 @@
 defmodule Renderer do
   def render(board) do
     Enum.each(board, fn(row) -> render_row(row) end)
+    IO.puts ""
   end
 
   def render_row(row) do
