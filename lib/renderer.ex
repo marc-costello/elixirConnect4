@@ -1,11 +1,14 @@
 defmodule Renderer do
   def render(board) do
-    Enum.each(board, fn(row) -> render_row(row) end)
+    horizontal_board = Enum.reverse Board.convert(board, :horizontal)
+    Enum.each(horizontal_board, fn(col) ->
+      render_column(col)
+    end)
     IO.puts ""
   end
 
-  def render_row(row) do
-    row_string = Enum.reduce(row, "", fn(entry, acc) ->
+  def render_column(col) do
+    row_string = Enum.reduce(col, "", fn(entry, acc) ->
       symbol = convert_colour_to_symbol(entry)
       acc <> "[#{symbol}] "
     end)
@@ -16,7 +19,7 @@ defmodule Renderer do
     case colour do
       :red -> "R"
       :yellow -> "Y"
-      :empty -> "x"
+      :empty -> "o"
     end
   end
 end

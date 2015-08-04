@@ -38,7 +38,7 @@ defmodule Game do
    end
 
    defp drop_coin_or_tell_user_of_failure(column, board, player) do
-     case Board.drop_coin column, board, player do
+     case Board.drop_coin (column - 1), board, player do
        :error ->
          take_turn board, player
        success -> success

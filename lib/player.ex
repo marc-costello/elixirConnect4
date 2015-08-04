@@ -5,7 +5,7 @@ defmodule Player do
       If the input cannot be parsed it will make another attempt until we get an Integer parsable result
       returns: whole a integer
    """
-   def receive_input(prompt \\ "Select a column 1-8: ") do
+   def receive_input(prompt \\ "Select a column 1-7: ") do
        input = IO.gets(prompt) |> String.replace "\n", ""
        case Integer.parse input do
          :error ->

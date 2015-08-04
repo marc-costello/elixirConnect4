@@ -22,4 +22,14 @@ defmodule AiTests do
     result = Ai.calculate_best_move board, :yellow
     assert result >= 0 && result <= GS.max_column_index
   end
+
+  test "wont recommend a column with no empty spaces left" do
+      full_row = fn -> for _ <- 1..GS.no_rows, do: :red end
+      empty_row = fn -> for _ <- 1..GS.no_rows, do: :red end
+      board =
+         for n <- 1..GS.no_columns, do: full_row.()
+         |> List.replace_at(1, empty_row.())
+
+      assert Ai.calculate_best_move(board, :yellow) == 1
+  end
 end

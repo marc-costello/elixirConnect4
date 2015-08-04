@@ -3,8 +3,6 @@ defmodule ElixirConnect4 do
 
    def start() do
       {board, player} = Game.start_new()
-
-      IO.puts "Select a column from 1 #{GS.no_columns}"
       game_loop(board, player)
    end
 
@@ -15,7 +13,14 @@ defmodule ElixirConnect4 do
           {:error, msg} ->
              IO.puts msg
              game_loop(board, player)
-          {:ok, updated_board, _p, _coord} -> game_loop(updated_board, %Player{type: :computer, colour: :yellow})
+          {:ok, updated_board, player_which_just_moved, _coord} -> game_loop(updated_board, next_player(player_which_just_moved.type))
        end
+   end
+
+   defp next_player(last_player_type) do
+      case last_player_type do
+         :human -> %Player{type: :computer, colour: :yellow}
+         :computer -> %Player{type: :human, colour: :red}
+      end
    end
 end
