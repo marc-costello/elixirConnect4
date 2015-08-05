@@ -13,7 +13,7 @@ defmodule ElixirConnect4 do
              IO.puts msg
              game_loop(board, player)
           {:ok, updated_board, player_which_just_moved, coord} ->
-             if handle_game_state(board, coord, player_which_just_moved.colour) == {:none} do
+             if handle_game_state(updated_board, coord, player_which_just_moved.colour) == {:none} do
                 game_loop(updated_board, next_player(player_which_just_moved.type))
              end
        end
@@ -28,13 +28,14 @@ defmodule ElixirConnect4 do
 
    defp handle_game_state(board, coord, colour) do
        case Detector.game_state(board, coord, colour) do
-           {:win, colour, direction} -> end_game("WINNER! - #{to_string(colour)} did it with a #{to_string(direction)} connect4")
-           {:draw} -> end_game("DRAW")
+           {:win, colour, direction} -> end_game(board, "WINNER! - #{to_string(colour)} did it with a #{to_string(direction)} connect4")
+           {:draw} -> end_game(board, "DRAW")
            x -> x
        end
    end
 
-   defp end_game(msg) do
+   defp end_game(board, msg) do
+      Renderer.render board
       IO.puts msg
    end
 end
