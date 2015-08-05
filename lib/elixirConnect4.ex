@@ -1,5 +1,4 @@
 defmodule ElixirConnect4 do
-   alias GameSettings, as: GS
 
    def start() do
       {board, player} = Game.start_new()
@@ -13,7 +12,10 @@ defmodule ElixirConnect4 do
           {:error, msg} ->
              IO.puts msg
              game_loop(board, player)
-          {:ok, updated_board, player_which_just_moved, _coord} -> game_loop(updated_board, next_player(player_which_just_moved.type))
+          {:ok, updated_board, player_which_just_moved, coord} ->
+             if handle_game_state(board, coord, player_which_just_moved.colour) == {:none} do
+                game_loop(updated_board, next_player(player_which_just_moved.type))
+             end
        end
    end
 
@@ -22,5 +24,17 @@ defmodule ElixirConnect4 do
          :human -> %Player{type: :computer, colour: :yellow}
          :computer -> %Player{type: :human, colour: :red}
       end
+   end
+
+   defp handle_game_state(board, coord, colour) do
+       case Detector.game_state(board, coord, colour) do
+           {:win, colour, direction} -> end_game("WINNER! - #{to_string(colour)} did it with a #{to_string(direction)} connect4")
+           {:draw} -> end_game("DRAW")
+           x -> x
+       end
+   end
+
+   defp end_game(msg) do
+      IO.puts msg
    end
 end

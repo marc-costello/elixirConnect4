@@ -15,6 +15,7 @@ defmodule Game do
         :human -> take_human_turn board, player
         :computer -> take_computer_turn board, player
       end
+
    end
 
    defp take_human_turn(board, player) do
@@ -28,11 +29,13 @@ defmodule Game do
 
    defp take_computer_turn(board, player) do
     result =
-       Ai.calculate_best_move(board, player.colour)
+       Ai.get_random()
        |> Board.drop_coin(board, player)
+       #Ai.calculate_best_move(board, player.colour)
+       #|> Board.drop_coin(board, player)
 
      case result do
-       :error -> IO.puts "error happened while taking computer turn."
+       :error -> take_computer_turn(board, player)
        success -> success
      end
    end
