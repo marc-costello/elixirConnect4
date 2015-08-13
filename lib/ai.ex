@@ -2,49 +2,42 @@ defmodule Ai do
   alias GameSettings, as: GS
 
   def calculate_best_move(board, colour) do
-     horizontal_board = Board.convert board, :horizontal
-
-     vertical_counts =
-         board
-         |> counts_of_colour_with_index(colour)
-         |> sort
-
-     horizontal_counts =
-        horizontal_board
-        |> counts_of_colour_with_index(colour)
-        |> sort
-
-     highest_chance(vertical_counts, horizontal_counts)
-     |> get_final_recommended_row_index
+     # for each possible move, (column)
+     1..GS.no_columns
+     |> Enum.map fn (i) -> column_rank(i, board, colour) end
   end
 
-  defp counts_of_colour_with_index(board, colour) do
-     Enum.map(Enum.with_index(board), fn({row, i}) ->
-        {Enum.count(row, &(&1 == colour)), i}
-     end)
+  defp column_rank(columnIndex, board, colour) do
+     state_process_id = Agent.start_link(fn -> 0 end)
+     case loop(board, colour) do
+      {:continue, updated_board, nextColour} -> loop(updated_board, nextColour, state_process_id, column_index)
+      {:end} ->
+         rank = Agent.get(state_process_id, &(&1))
+         Agent.stop(state_process_id)
+         rank
+    end
   end
 
-  defp sort(counts) do
-      Enum.sort(counts, fn ({a, _}, {b, _}) -> a > b end)
-  end
+  defp loop(board, :yellow, state_process_id) do
+     # returns
+     #{:continue, updated_board, nextColour} or
+     # {:end}
 
-  defp highest_chance(vertical_counts, horizontal_counts) do
-     {vc, vci} = Enum.at(vertical_counts, 0)
-     {hc, hci} = Enum.at(horizontal_counts, 0)
-
-     case vc do
-         x when x >= hc -> {:vertical, vci}
-         _ -> {:horizontal, hci}
+     # drop coin on board
+     case Board.drop_coin(column_index, board, %Player {type = :computer, colour = :yellow}) do
+        :error -> 
+        {:ok, updatedBoard, player, {column, emptyRowIndex}} ->
      end
+     # get game_state
+     # update state depending on game_state
+     # call loop until we can no longer move, win or draw
   end
 
-  defp get_final_recommended_row_index({alignment, index}) when alignment == :vertical do
-     index
-  end
+  defp loop(board, :red, state_process_id) do
+     # returns
+     #{:continue, updated_board, nextColour} or
+     # {:end}
 
-  defp get_final_recommended_row_index({alignment, index}) when alignment == :horizontal do
-    # for now, just return random, to be safe
-    get_random()
   end
 
   def get_random() do
