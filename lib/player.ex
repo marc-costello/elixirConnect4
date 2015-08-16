@@ -15,6 +15,13 @@ defmodule Player do
        end
    end
 
+   def next_player(last_player_type) do
+      case last_player_type do
+         :human -> %Player{type: :computer, colour: :yellow}
+         :computer -> %Player{type: :human, colour: :red}
+      end
+   end
+
    defp print_not_valid_input(input) do
      IO.puts "#{input} is not a valid input"
    end

@@ -14,16 +14,9 @@ defmodule ElixirConnect4 do
              game_loop(board, player)
           {:ok, updated_board, player_which_just_moved, coord} ->
              if handle_game_state(updated_board, coord, player_which_just_moved.colour) == {:none} do
-                game_loop(updated_board, next_player(player_which_just_moved.type))
+                game_loop(updated_board, Player.next_player(player_which_just_moved.type))
              end
        end
-   end
-
-   defp next_player(last_player_type) do
-      case last_player_type do
-         :human -> %Player{type: :computer, colour: :yellow}
-         :computer -> %Player{type: :human, colour: :red}
-      end
    end
 
    defp handle_game_state(board, coord, colour) do
