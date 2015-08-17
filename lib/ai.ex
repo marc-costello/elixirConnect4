@@ -21,7 +21,8 @@ defmodule Ai do
         0..GS.max_column_index
         |> Enum.reduce fn (i, acc) ->
           {updated_board, rank} = round(i, board, player)
-          rank + loop(updated_board, next_player, acc_rank, new_depth)
+          new_acc = acc + rank
+          loop(updated_board, next_player, new_acc, new_depth)
         end
     end
   end
