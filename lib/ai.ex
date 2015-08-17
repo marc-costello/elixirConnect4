@@ -5,43 +5,43 @@ defmodule Ai do
      # start the loop
      0..GS.max_column_index
      |> Enum.map fn i ->
-       {i, loop(board, player, 0, depth)}
+       {i, generate_states(board, player, 0)}
      end
   end
 
-  @doc """
-    acc needs to be a list of all the ranks
-  """
-  def loop(board, player, acc_rank, depth) do
-    case depth do
-      0 -> acc_rank
-      _ ->
-        new_depth = depth - 1
-        next_player = Player.next_player(player.type)
-        0..GS.max_column_index
-        |> Enum.reduce fn (i, acc) ->
-          {updated_board, rank} = round(i, board, player)
-          new_acc = acc + rank
-          loop(updated_board, next_player, new_acc, new_depth)
-        end
+  def generate_states(board, player, acc) do
+    next_player = Player.next_player(player.type)
+    0..GS.max_column_index
+    |> Enum.map fn i -> round(i, board, player) end
+    |> Enum.each fn entry ->
+      case entry do
+        {:end, new_board, rank} -> acc + rank
+        {:continue, new_board, rank} -> generate_states(new_board, next_player, rank)
+      end
     end
   end
 
   def round(column, board, player) when player == %Player{type: :human, colour: :red} do
       IO.puts "human round - col = #{column}"
-      {:ok, updated_board, player, coord} = Board.drop_coin(column, board, player)
-      case Detector.game_state(updated_board, coord, player.colour) do
-        {:win, _, _} -> {updated_board, -1000}
-        _ -> {updated_board, 0}
+      case Board.drop_coin(column, board, player) do
+        :error -> {:end, board, 0}
+        {:ok, updated_board, player, coord} ->
+          case Detector.game_state(updated_board, coord, player.colour) do
+            {:win, _, _} -> {:end, updated_board, -1000}
+            _ -> {:continue, updated_board, 0}
+          end
       end
   end
 
   def round(column, board, player) when player == %Player{type: :computer, colour: :yellow} do
       IO.puts "computer round - col = #{column}"
-      {:ok, updated_board, player, coord} = Board.drop_coin(column, board, player)
-      case Detector.game_state(updated_board, coord, player.colour) do
-        {:win, _, _} -> {updated_board, 1000}
-        _ -> {updated_board, 0}
+      case Board.drop_coin(column, board, player) do
+        :error -> {:end, board, 0}
+        {:ok, updated_board, player, coord} ->
+          case Detector.game_state(updated_board, coord, player.colour) do
+            {:win, _, _} -> {:end, updated_board, 1000}
+            _ -> {:continue, updated_board, 0}
+          end
       end
   end
 
