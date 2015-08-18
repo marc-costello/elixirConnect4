@@ -5,24 +5,28 @@ defmodule Ai do
      # start the loop
      0..GS.max_column_index
      |> Enum.map fn i ->
-       {i, generate_states(board, player, 0)}
+        {i, generate_states(board, player, 0)}
      end
   end
 
-  def generate_states(board, player, acc) do
+  def generate_states(board, player, base_acc) do
+    IO.puts "in generate_states beginning"
     next_player = Player.next_player(player.type)
-    0..GS.max_column_index
-    |> Enum.map fn i -> round(i, board, player) end
-    |> Enum.each fn entry ->
-      case entry do
-        {:end, new_board, rank} -> acc + rank
-        {:continue, new_board, rank} -> generate_states(new_board, next_player, rank)
-      end
-    end
+    mapped =
+       0..GS.max_column_index
+       |> Enum.map fn i -> round(i, board, player) end
+    IO.puts "completed mapping rounds"
+    Enum.reduce mapped, base_acc, fn (entry, acc) ->
+       case entry do
+         {:end, new_board, rank} ->
+            IO.puts "END with rank : #{rank}"
+            acc + rank
+         {:continue, new_board, rank} -> generate_states(new_board, next_player, acc + rank)
+       end
+     end
   end
 
   def round(column, board, player) when player == %Player{type: :human, colour: :red} do
-      IO.puts "human round - col = #{column}"
       case Board.drop_coin(column, board, player) do
         :error -> {:end, board, 0}
         {:ok, updated_board, player, coord} ->
@@ -34,7 +38,6 @@ defmodule Ai do
   end
 
   def round(column, board, player) when player == %Player{type: :computer, colour: :yellow} do
-      IO.puts "computer round - col = #{column}"
       case Board.drop_coin(column, board, player) do
         :error -> {:end, board, 0}
         {:ok, updated_board, player, coord} ->
