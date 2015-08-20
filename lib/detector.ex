@@ -6,8 +6,8 @@ defmodule Detector do
    @spec game_state(List.t, {Integer, Integer}, Atom.t) :: game_state_result
    def game_state(board, coord, colour) do
      detection_results = {
-       (vertical_win? board, colour),
-       (horizontal_win? board, colour),
+       (vertical_win? board, colour, coord),
+       (horizontal_win? board, colour, coord),
        (diagonal_win? board, colour, coord),
        (draw? board)
      }
@@ -20,17 +20,14 @@ defmodule Detector do
      end
    end
 
-   def vertical_win?(board, colour) do
-      Enum.any? board, fn (row) ->
-         is_group_a_winner? row, colour
-      end
+   def vertical_win?(board, colour, {x, _y}) do
+      Enum.at(board, x) |> is_group_a_winner?(colour)
    end
 
-   def horizontal_win?(board, colour) do
-      horizontal_board = Board.convert(board, :horizontal)
-      Enum.any? horizontal_board, fn (row) ->
-         is_group_a_winner? row, colour
-      end
+   def horizontal_win?(board, colour, {_x, y}) do
+      Board.convert(board, :horizontal)
+      |> Enum.at(y)
+      |> is_group_a_winner?(colour)
    end
 
    def diagonal_win?(board, colour, coord) do
