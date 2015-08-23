@@ -2,11 +2,21 @@ defmodule Ai do
   alias GameSettings, as: GS
 
   def calculate_best_move(board, player, depth) do
-     # start the loop
-     0..GS.max_column_index
-     |> Enum.map fn i ->
-        {i, generate_states(board, player, 0, depth)}
-     end
+    get_states(board, player)
+  end
+
+  def get_states(board, player) do
+    0..GS.max_column_index
+    |> Enum.map fn i ->
+      case Board.drop_coin(i, board, player) do
+        :error -> {board, 0}
+        {:ok, updated_board, player, coord} -> {updated_board, coord}
+      end
+    end
+  end
+
+  def minimax(states) do
+
   end
 
   def generate_states(board, player, base_acc, depth) do
@@ -17,12 +27,12 @@ defmodule Ai do
              0..GS.max_column_index
              |> Enum.map fn i -> round(i, board, player) end
           get_recursive_states_function = fn (board, player, acc, depth) ->
-             fn -> generate_states(board, player, acc, depth) end
+             fn ->  end
           end
           Enum.reduce mapped, base_acc, fn (entry, acc) ->
              case entry do
                {:end, _new_board, rank} -> acc + rank
-               {:continue, new_board, rank} -> get_recursive_states_function.(new_board, Player.next_player(player.type), (acc + rank), (depth - 1)).()
+               {:continue, new_board, rank} -> generate_states(new_board, Player.next_player(player.type), (acc + rank), (depth - 1))
              end
            end
     end
