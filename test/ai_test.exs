@@ -7,6 +7,26 @@ defmodule AiTests do
   # mod_board = Board.create_new() |> List.replace_at(1, [:yellow,:yellow,:yellow,:empty,:empty,:empty])
   # Ai.calculate_best_move(mod_board, %Player{type: :computer, colour: :yellow}, 3)
 
+  # PSEUDOCODE FOR MINIMAX
+  # function minimax(node, depth, maximizingPlayer)
+  #     if depth = 0 or node is a terminal node
+  #         return the heuristic value of node
+  #     if maximizingPlayer
+  #         bestValue := -∞
+  #         for each child of node
+  #             val := minimax(child, depth - 1, FALSE)
+  #             bestValue := max(bestValue, val)
+  #         return bestValue
+  #     else
+  #         bestValue := +∞
+  #         for each child of node
+  #             val := minimax(child, depth - 1, TRUE)
+  #             bestValue := min(bestValue, val)
+  #         return bestValue
+  #
+  # (* Initial call for maximizing player *)
+  # minimax(origin, depth, TRUE)
+
   @computer %Player{type: :computer, colour: :yellow}
   @human %Player{type: :human, colour: :red}
 
@@ -17,15 +37,10 @@ defmodule AiTests do
     assert length(states) == GS.no_columns
   end
 
-  test "each state is one move dropped on the original board" do
-    board = Board.create_new()
-    states = Ai.get_states(board, @computer)
-    test_row = [:yellow,:empty,:empty,:empty,:empty,:empty]
-    
-  end
-
-  test "assign a number to each state" do
-
+  test "assign a value to each state" do
+     board = Board.create_new()
+     states = Ai.get_states(board, @computer)
+     assigned = 
   end
 
   test "return the highest minimax branch value" do
