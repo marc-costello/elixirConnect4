@@ -20,7 +20,7 @@ defmodule Board do
    end
 
    def can_drop_coin(board, column) do
-      case Enum.at board, column do
+      case Enum.at(board, column) do
          nil -> false
          columnList ->
             availableIndex =

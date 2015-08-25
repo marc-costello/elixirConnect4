@@ -3,7 +3,12 @@ defmodule Ai do
 
   def calculate_best_move(board, depth) do
      0..GS.max_column_index
-     |> Enum.map (fn i -> { i, max_move(board, depth) } end)
+     |> Enum.map (fn i ->
+       case Board.drop_coin(i, board, %Player{type: :computer, colour: :yellow}) do
+         :error -> {i, 0}
+         {:ok, updated_board, _player, coord} -> {i, max_move({updated_board, coord}, depth)}
+       end
+     end)
   end
 
   def max_move(node, depth) do
@@ -23,7 +28,7 @@ defmodule Ai do
      end
   end
 
-  def min_move({}, depth) do
+  def min_move(node, depth) do
      player = %Player{type: :human, colour: :red}
      {board, move_coord} = node
 
@@ -44,7 +49,7 @@ defmodule Ai do
     0..GS.max_column_index
     |> Enum.map fn i ->
       case Board.drop_coin(i, board, player) do
-        :error -> {board, 0}
+        :error -> raise "unable to drop coin"
         {:ok, updated_board, player, coord} -> %{board: updated_board, coord: coord}
       end
     end

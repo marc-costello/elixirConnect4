@@ -2,10 +2,10 @@ defmodule AiTests do
   use ExUnit.Case
   alias GameSettings, as: GS
 
-  # Ai.calculate_best_move(Board.create_new(), %Player{type: :computer, colour: :yellow}, 4)
+  # Ai.calculate_best_move(Board.create_new(), 4)
 
   # mod_board = Board.create_new() |> List.replace_at(1, [:yellow,:yellow,:yellow,:empty,:empty,:empty])
-  # Ai.calculate_best_move(mod_board, %Player{type: :computer, colour: :yellow}, 3)
+  # Ai.calculate_best_move(mod_board, 3)
 
   # PSEUDOCODE FOR MINIMAX
   # function minimax(node, depth, maximizingPlayer)
@@ -40,7 +40,7 @@ defmodule AiTests do
   test "assign a value to each state" do
      board = Board.create_new()
      states = Ai.get_states(board, @computer)
-     assigned = 
+     assigned =
   end
 
   test "return the highest minimax branch value" do
