@@ -11,7 +11,7 @@ defmodule Board do
    end
 
    def drop_coin(column, board, player) do
-      case can_drop_coin board, column do
+      case can_drop_coin? board, column do
          false -> :error
          {:ok, emptyRowIndex} ->
             updatedBoard = make_move(board, {column, emptyRowIndex}, player.colour)
@@ -19,7 +19,8 @@ defmodule Board do
       end
    end
 
-   def can_drop_coin(board, column) do
+   def can_drop_coin?(board, column) do
+      if !is_list(board), do: IO.puts board
       case Enum.at(board, column) do
          nil -> false
          columnList ->

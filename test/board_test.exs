@@ -41,19 +41,19 @@ defmodule BoardTests do
 
    test "given a board and a valid column number, can a coin be dropped? should return ok" do
        board = Board.create_new()
-       {status, _index} = Board.can_drop_coin(board, 1)
+       {status, _index} = Board.can_drop_coin?(board, 1)
        assert status == :ok
    end
 
    test "given a board and a valid column number, can drop coin should return the index of the first empty row" do
       board = Board.create_new()
-      {:ok, index} = Board.can_drop_coin(board, 1)
+      {:ok, index} = Board.can_drop_coin?(board, 1)
       assert index == 0
    end
 
    test "given a board and an invalid column number, can a coin be dropped should return false" do
        board = Board.create_new()
-       assert Board.can_drop_coin(board, 99) == false
+       assert Board.can_drop_coin?(board, 99) == false
    end
 
    test "given a board with a full column, can a coin be dropped should return false" do
@@ -61,7 +61,7 @@ defmodule BoardTests do
        columnIndex = 0
        fullColumn = for _ <- 1..GS.no_columns, do: :red
        updatedBoard = board |> List.replace_at(columnIndex, fullColumn)
-       assert Board.can_drop_coin(updatedBoard, columnIndex) == false
+       assert Board.can_drop_coin?(updatedBoard, columnIndex) == false
    end
 
    test "format board into horizontal lists for diffing" do
