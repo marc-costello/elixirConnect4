@@ -83,4 +83,25 @@ defmodule AiTests do
 
     assert heuristic_result == %{terminal: true, value: -10}
   end
+
+  test "get all immediately possible states for a board" do
+    board = Board.create_new()
+    all_states = Ai.get_states(board, @computer)
+
+    assert Enum.all?(all_states, fn %{board: b, coord: {x,y}} ->
+      res = b |> Enum.at(x) |> Enum.at(y)
+      res == :yellow
+    end)
+  end
+
+  test "running minimax on a particular node should return the combined values" do
+    yellow_row = [:yellow,:yellow,:yellow,:empty,:empty,:empty]
+    red_row = [:red,:red,:red,:empty,:empty,:empty]
+    board =
+      List.replace_at(Board.create_new(), 1, yellow_row)
+      |> List.replace_at(2, red_row)
+    values = Ai.node_tree(board, 1)
+
+    assert values == [0,10,-10,0,0,0,0]
+  end
 end

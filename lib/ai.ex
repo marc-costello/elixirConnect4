@@ -3,34 +3,31 @@ defmodule Ai do
 
   @type minimax_minimax_node :: {Enum, {number, number}}
 
+  @computer %Player{type: :computer, colour: :yellow}
+  @human %Player{type: :human, colour: :red}
+
   def calculate_best_move(board, depth) do
-     0..GS.max_column_index
-     |> Enum.map (fn i ->
-       case Board.drop_coin(i, board, %Player{type: :computer, colour: :yellow}) do
-         :error -> {i, 0}
-         {:ok, updated_board, _player, coord} -> {i, max_move({updated_board, coord}, depth)}
-       end
-     end)
+     node_tree(board, depth)
+     |> Enum.with_index
+     |> Enum.sort(fn {valueA, _iA}, {valueB, _iB} ->
+          valueA > valueB
+        end)
+     |> Enum.at(0)
+     |> elem(1)
+  end
+
+  def node_tree(node, depth) do
+    0..GS.max_column_index
+    |> Enum.map (fn i ->
+      case Board.drop_coin(i, node, @computer) do
+        :error -> 0
+        {:ok, updated_board, _player, coord} -> max_move({updated_board, coord}, depth)
+      end
+    end)
   end
 
   def max_move(minimax_node, depth) do
-     player = %Player{type: :computer, colour: :yellow}
-     {board, move_coord} = minimax_node
-
-     if depth == 0 || is_terminal?(minimax_node) do
-         heuristic(move_coord, board, player)
-     else
-          get_states(board, player)
-          |> Enum.map(fn x -> heuristic(x.coord, x.board, player) end)
-          |> Enum.reduce(0, fn (child, best_value) ->
-             val = min_move(minimax_node, depth - 1)
-             min(best_value, val.value)
-          end)
-     end
-  end
-
-  def min_move(minimax_node, depth) do
-     player = %Player{type: :human, colour: :red}
+     player = @computer
      {board, move_coord} = minimax_node
 
      if depth == 0 do
@@ -38,7 +35,23 @@ defmodule Ai do
      else
           get_states(board, player)
           |> Enum.map(fn x -> heuristic(x.coord, x.board, player) end)
-          |> Enum.reduce(0, fn (child, best_value) ->
+          |> Enum.reduce(0, fn (_child, best_value) ->
+             val = min_move(minimax_node, depth - 1)
+             min(best_value, val.value)
+          end)
+     end
+  end
+
+  def min_move(minimax_node, depth) do
+     player = @human
+     {board, move_coord} = minimax_node
+
+     if depth == 0 do
+         heuristic(move_coord, board, player)
+     else
+          get_states(board, player)
+          |> Enum.map(fn x -> heuristic(x.coord, x.board, player) end)
+          |> Enum.reduce(0, fn (_child, best_value) ->
              val = max_move(minimax_node, depth - 1)
              max(best_value, val.value)
           end)
@@ -50,12 +63,12 @@ defmodule Ai do
     |> Enum.map (fn i ->
       case Board.drop_coin(i, board, player) do
         :error -> raise "unable to drop coin"
-        {:ok, updated_board, player, coord} -> %{board: updated_board, coord: coord}
+        {:ok, updated_board, _player, coord} -> %{board: updated_board, coord: coord}
       end
     end)
   end
 
-  def heuristic(move_coord, board, player) when player == %Player{type: :human, colour: :red} do
+  def heuristic(move_coord, board, player) when player == @human do
        case Detector.game_state(board, move_coord, player.colour) do
          {:win, _, _} -> %{terminal: true, value: -10}
          {:draw} -> %{terminal: true, value: 0}
@@ -63,16 +76,12 @@ defmodule Ai do
        end
   end
 
-  def heuristic(move_coord, board, player) when player == %Player{type: :computer, colour: :yellow} do
+  def heuristic(move_coord, board, player) when player == @computer do
        case Detector.game_state(board, move_coord, player.colour) do
          {:win, _, _} -> %{terminal: true, value: 10}
          {:draw} -> %{terminal: true, value: 0}
          _ -> %{terminal: false, value: 0}
        end
-  end
-
-  defp is_terminal?(minimax_node) do
-    
   end
 
   def get_random() do
