@@ -3,37 +3,46 @@ defmodule AiTests do
   require Integer
   alias GameSettings, as: GS
 
-  # Ai.calculate_best_move(Board.create_new(), 4)
-
-  # mod_board = Board.create_new() |> List.replace_at(1, [:yellow,:yellow,:yellow,:empty,:empty,:empty])
-  # Ai.calculate_best_move(mod_board, 3)
-
-  # PSEUDOCODE FOR MINIMAX
-  # function minimax(node, depth, maximizingPlayer)
-  #     if depth = 0 or node is a terminal node
-  #         return the heuristic value of node
-  #     if maximizingPlayer
-  #         bestValue := -∞
-  #         for each child of node
-  #             val := minimax(child, depth - 1, FALSE)
-  #             bestValue := max(bestValue, val)
-  #         return bestValue
-  #     else
-  #         bestValue := +∞
-  #         for each child of node
-  #             val := minimax(child, depth - 1, TRUE)
-  #             bestValue := min(bestValue, val)
-  #         return bestValue
+  # MinMax (GamePosition game) {
+  #   return MaxMove (game);
+  # }
   #
-  # (* Initial call for maximizing player *)
-  # minimax(origin, depth, TRUE)
+  # MaxMove (GamePosition game) {
+  #   if (GameEnded(game)) {
+  #     return EvalGameState(game);
+  #   }
+  #   else {
+  #     best_move < - {};
+  #     moves <- GenerateMoves(game);
+  #     ForEach moves {
+  #        move <- MinMove(ApplyMove(game));
+  #        if (Value(move) > Value(best_move)) {
+  #           best_move < - move;
+  #        }
+  #     }
+  #     return best_move;
+  #   }
+  # }
+  #
+  # MinMove (GamePosition game) {
+  #   best_move <- {};
+  #   moves <- GenerateMoves(game);
+  #   ForEach moves {
+  #      move <- MaxMove(ApplyMove(game));
+  #      if (Value(move) > Value(best_move)) {
+  #         best_move < - move;
+  #      }
+  #   }
+  #
+  #   return best_move;
+  # }
 
   @computer %Player{type: :computer, colour: :yellow}
   @human %Player{type: :human, colour: :red}
 
   test "get all states from the board" do
     board = Board.create_new()
-    states = Ai.get_states(board, @computer)
+    states = Ai.get_child_nodes(board, @computer)
 
     assert length(states) == GS.no_columns
   end
@@ -86,7 +95,7 @@ defmodule AiTests do
 
   test "get all immediately possible states for a board" do
     board = Board.create_new()
-    all_states = Ai.get_states(board, @computer)
+    all_states = Ai.get_child_nodes(board, @computer)
 
     assert Enum.all?(all_states, fn %{board: b, coord: {x,y}} ->
       res = b |> Enum.at(x) |> Enum.at(y)
@@ -100,8 +109,8 @@ defmodule AiTests do
     board =
       List.replace_at(Board.create_new(), 1, yellow_row)
       |> List.replace_at(2, red_row)
-    values = Ai.node_tree(board, 1)
+    value = Ai.calculate_best_move(board, 1)
 
-    assert values == [0,10,-10,0,0,0,0]
+    assert value == [0,10,-10,0,0,0,0]
   end
 end
