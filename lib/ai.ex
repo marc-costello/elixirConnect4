@@ -32,18 +32,15 @@ defmodule Ai do
   """
   def max_move(node, depth) do
     if depth < 0 || node.terminal do
-      IO.puts "MAX - i've reached depth end or terminal node - #{inspect(node)}"
-      node.value
+      # then return the heuristic value of the node
+      heuristic(node.coord, node.board, @computer)
     else
       get_child_nodes(node.board, @computer)
-      |> Enum.reduce(0, fn(child_node, acc) ->
-            # child_node = %Node{board, terminal, coord}
-            heu = heuristic(child_node.coord, child_node.board, @computer)
-            max(heu.value, min_move(child_node, depth - 1))
+      |> Enum.reduce(0, fn (node, best) ->
+            min(best, min_move(node, depth - 1))
          end)
     end
   end
-
   # function minimax( node, depth )
   #  if node is a terminal node or depth <= 0:
   #      return the heuristic value of node
@@ -77,14 +74,12 @@ defmodule Ai do
   """
   def min_move(node, depth) do
     if depth < 0 || node.terminal do
-      IO.puts "MIN - i've reached depth end or terminal node - #{inspect(node.value)}"
-      node.value
+      # then return the heuristic value of the node
+      heuristic(node.coord, node.board, @human)
     else
       get_child_nodes(node.board, @human)
-      |> Enum.reduce(0, fn(child_node, _acc) ->
-            # child_node = %Node{board, terminal, coord}
-            heu = heuristic(child_node.coord, child_node.board, @human)
-            min(heu.value, max_move(child_node, depth - 1))
+      |> Enum.reduce(0, fn (node, best) ->
+            max(best, max_move(node, depth - 1))
          end)
     end
   end
@@ -98,25 +93,25 @@ defmodule Ai do
     0..GS.max_column_index
     |> Enum.map (fn i ->
       case Board.drop_coin(i, board, player) do
-        :error -> %Node{board: board, terminal: true, coord: nil}
+        :error -> %Node{board: board, terminal: true, coord: {i, GS.max_row_index}}
         {:ok, updated_board, _player, coord} -> %Node{board: updated_board, coord: coord, terminal: false}
       end
     end)
   end
 
+  def eval()
+
   def heuristic(move_coord, board, player) when player == @human do
        case Detector.game_state(board, move_coord, player.colour) do
-         {:win, _, _} -> %{terminal: true, value: -10}
-         {:draw} -> %{terminal: true, value: 0}
-         _ -> %{terminal: false, value: 0}
+         {:win, _, _} -> -10
+         _ -> 0
        end
   end
 
   def heuristic(move_coord, board, player) when player == @computer do
        case Detector.game_state(board, move_coord, player.colour) do
-         {:win, _, _} -> %{terminal: true, value: 10}
-         {:draw} -> %{terminal: true, value: 0}
-         _ -> %{terminal: false, value: 0}
+         {:win, _, _} -> 10
+         _ -> 0
        end
   end
 

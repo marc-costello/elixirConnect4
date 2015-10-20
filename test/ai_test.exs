@@ -47,23 +47,23 @@ defmodule AiTests do
     assert length(states) == GS.no_columns
   end
 
-  test "heuristic with no computer winner should return no value and not terminal" do
+  test "heuristic with no computer winner should return no value" do
     {:ok, board, _player, _coord} = Board.drop_coin(0, Board.create_new(), @computer)
     heuristic_result = Ai.heuristic({0, 0}, board, @computer)
 
-    assert heuristic_result == %{terminal: false, value: 0}
+    assert heuristic_result == 0
   end
 
-  test "heuristic with a computer winner should return terminal true with a value of 10" do
+  test "heuristic with a computer winner should return a value of 10" do
     board = Board.create_new()
     winning_row = [:yellow,:yellow,:yellow,:yellow,:empty,:empty]
     winning_board = List.replace_at board, 0, winning_row
     heuristic_result = Ai.heuristic({0, 3}, winning_board, @computer)
 
-    assert heuristic_result == %{terminal: true, value: 10}
+    assert heuristic_result == 10
   end
 
-  test "heuristic with a draw should return terminal true with a value of 0" do
+  test "heuristic with a draw should return a value of 0" do
     draw_row =
        fn -> for x <- 1..GS.no_rows do
            if Integer.is_even(x), do: :red, else: :yellow
@@ -74,23 +74,23 @@ defmodule AiTests do
     end
 
     heuristic_result = Ai.heuristic({GS.max_column_index, GS.max_row_index}, draw_board, @human)
-    assert heuristic_result == %{terminal: true, value: 0}
+    assert heuristic_result == 0
   end
 
-  test "heuristic with no human winner should return terminal false and a value of 0" do
+  test "heuristic with no human winner should return a value of 0" do
     {:ok, board, _player, _coord} = Board.drop_coin(0, Board.create_new(), @human)
     heuristic_result = Ai.heuristic({0, 0}, board, @human)
 
-    assert heuristic_result == %{terminal: false, value: 0}
+    assert heuristic_result == 0
   end
 
-  test "heuristic with a human winner should return terminal true and a value of -10" do
+  test "heuristic with a human winner should return a value of -10" do
     board = Board.create_new()
     winning_row = [:red,:red,:red,:red,:empty,:empty]
     winning_board = List.replace_at board, 0, winning_row
     heuristic_result = Ai.heuristic({0, 3}, winning_board, @human)
 
-    assert heuristic_result == %{terminal: true, value: -10}
+    assert heuristic_result == -10
   end
 
   test "get all immediately possible states for a board" do

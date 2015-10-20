@@ -33,7 +33,7 @@ defmodule Detector do
    def diagonal_win?(board, colour, coord) do
       {move_column_index, move_row_index} = coord
       flat_board = List.flatten board
-      max_grid_index = (length flat_board) - 1
+      max_grid_index = length(flat_board) - 1
       starting_index = (move_column_index * GS.max_column_index) + move_row_index
 
       [7,9,-7,-9]
