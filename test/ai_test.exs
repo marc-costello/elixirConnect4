@@ -103,6 +103,24 @@ defmodule AiTests do
     end)
   end
 
+  test "max's move always returns the highest possible number" do
+    board = Board.create_new()
+    winning_row = [:yellow,:yellow,:yellow,:yellow,:empty,:empty]
+    winning_board = List.replace_at board, 0, winning_row
+    res = Ai.max_move(%Connect4.Node{board: winning_board, terminal: false, coord: {0,3}}, 0)
+
+    assert res == 10
+  end
+
+  test "min's move always returns the lowest possible number" do
+    board = Board.create_new()
+    winning_row = [:red,:red,:red,:red,:empty,:empty]
+    winning_board = List.replace_at board, 0, winning_row
+    res = Ai.min_move(%Connect4.Node{board: winning_board, terminal: false, coord: {0,3}}, 0)
+
+    assert res == -10
+  end
+
   test "running minimax on a particular node should return the combined values" do
     yellow_row = [:yellow,:yellow,:yellow,:empty,:empty,:empty]
     red_row = [:red,:red,:red,:empty,:empty,:empty]
@@ -112,5 +130,15 @@ defmodule AiTests do
     value = Ai.calculate_best_move(board, 1)
 
     assert value == [0,10,-10,0,0,0,0]
+  end
+
+  test "run heuristics on nodes should run heuristics all a collection of nodes" do
+    board = Board.create_new()
+    winning_row = [:yellow,:yellow,:yellow,:yellow,:empty,:empty]
+    winning_board = List.replace_at board, 0, winning_row
+    node = %Connect4.Node{board: winning_board, coord: {0,3}}
+    nodes = for i <- 1..2, do: node
+
+    assert Ai.run_heuristics_on_nodes(nodes, @computer) == (for i <- 1..2, do: %Connect4.Node{board: winning_board, coord: {0,3}, value: 10})
   end
 end

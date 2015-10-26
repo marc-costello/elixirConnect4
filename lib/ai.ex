@@ -14,7 +14,7 @@ defmodule Ai do
      0..GS.max_column_index
      |> Enum.map (fn i ->
            case Board.drop_coin(i, board, @computer) do
-             :error -> raise "unable to drop coin"
+             :error -> 0
              {:ok, updated_board, _player, coord} -> max_move(%Node{board: updated_board, terminal: false, coord: coord}, depth)
            end
         end)
@@ -31,16 +31,33 @@ defmodule Ai do
   node = %{board: updated_board, terminal: false, coord: coord}
   """
   def max_move(node, depth) do
-    if depth < 0 || node.terminal do
-      # then return the heuristic value of the node
-      heuristic(node.coord, node.board, @computer)
-    else
+    if depth == 0 do
       get_child_nodes(node.board, @computer)
+      |> run_heuristics_on_nodes(@computer)
       |> Enum.reduce(0, fn (node, best) ->
-            min(best, min_move(node, depth - 1))
+            max(node.value, best)
+         end)
+    else
+      ## I need to call heuristic of this node, vs the heuristic of min
+      get_child_nodes(node.board, @computer)
+      |> run_heuristics_on_nodes(@computer)
+      |> Enum.reduce(0, fn (node, best) ->
+            #IO.puts "best = #{best}. node value #{node.value}"
+            max(best, min_move(node, depth - 1))
          end)
     end
   end
+
+  @doc """
+  runs heuristics on a list of values and returns a list of new nodes.
+  """
+  def run_heuristics_on_nodes(nodes, player) do
+    Enum.map(nodes, fn (x) ->
+      value = heuristic(x.coord, x.board, player)
+      %Node{board: x.board, coord: x.coord, terminal: false, value: value}
+    end)
+  end
+
   # function minimax( node, depth )
   #  if node is a terminal node or depth <= 0:
   #      return the heuristic value of node
@@ -73,13 +90,17 @@ defmodule Ai do
   node = %{board: updated_board, terminal: false, coord: coord}
   """
   def min_move(node, depth) do
-    if depth < 0 || node.terminal do
-      # then return the heuristic value of the node
-      heuristic(node.coord, node.board, @human)
+    if depth == 0 do
+      get_child_nodes(node.board, @human)
+      |> run_heuristics_on_nodes(@human)
+      |> Enum.reduce(0, fn (node, best) ->
+            min(node.value, best)
+         end)
     else
       get_child_nodes(node.board, @human)
+      |> run_heuristics_on_nodes(@human)
       |> Enum.reduce(0, fn (node, best) ->
-            max(best, max_move(node, depth - 1))
+            min(best, max_move(node, depth - 1))
          end)
     end
   end
@@ -99,12 +120,10 @@ defmodule Ai do
     end)
   end
 
-  def eval()
-
   def heuristic(move_coord, board, player) when player == @human do
        case Detector.game_state(board, move_coord, player.colour) do
          {:win, _, _} -> -10
-         _ -> 0
+         _ -> -0
        end
   end
 
