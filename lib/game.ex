@@ -15,7 +15,6 @@ defmodule Game do
         :human -> take_human_turn board, player
         :computer -> take_computer_turn board, player
       end
-
    end
 
    defp take_human_turn(board, player) do
