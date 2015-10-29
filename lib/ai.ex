@@ -25,7 +25,7 @@ defmodule Ai do
 
   def grab_best_or_random(list) do
     if Enum.max(list) == Enum.min(list) do
-      Enum.random(list)
+      Enum.random(0..GS.max_column_index)
     else
       list
       |> Enum.with_index

@@ -28,10 +28,8 @@ defmodule Game do
 
    defp take_computer_turn(board, player) do
     result =
-       Ai.get_random()
+       Ai.calculate_best_move(board, 4)
        |> Board.drop_coin(board, player)
-       #Ai.calculate_best_move(board, player.colour)
-       #|> Board.drop_coin(board, player)
 
      case result do
        :error -> take_computer_turn(board, player)
